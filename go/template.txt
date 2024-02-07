@@ -1,0 +1,12 @@
+package {{.PackageName}}
+
+// Title: {{.Title}}
+
+// Problem link: {{.ProblemLink}}
+
+// Testcases: 
+{{- range $index, $elem := .Testcases}}
+// case {{$index}}: {{$elem}} 
+{{- end}}
+
+{{.CodeSnippet "Go"}}
