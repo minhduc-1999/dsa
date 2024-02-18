@@ -107,7 +107,7 @@ func (q Question) TransformTitleSlug() string {
 }
 
 func (q Question) ProblemLink() string {
-	return fmt.Sprintf("%s/problem/%s", LEETCODE_URL, q.TitleSlug)
+	return fmt.Sprintf("%s/problems/%s", LEETCODE_URL, q.TitleSlug)
 }
 
 func (q Question) SolutionFileName() string {
