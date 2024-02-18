@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+const DSA_MODULE = "dsa"
+
 type Query struct {
 	Variables map[string]interface{} `json:"variables"`
 	Query     string                 `json:"query"`
@@ -118,6 +120,10 @@ func (q Question) TestFileName() string {
 
 func (q Question) Dirname() string {
 	return path.Join(SOLUTION_DIR, fmt.Sprintf("%s_%s", q.FrontendId, q.TransformTitleSlug()))
+}
+
+func (q Question) TestCmd() string {
+	return fmt.Sprintf("go test %v", path.Join(DSA_MODULE, q.Dirname()))
 }
 
 func (q Question) PackageName() string {

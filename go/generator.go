@@ -15,6 +15,10 @@ const TEMPLATE_PATH = "./template.txt"
 const TEST_TEMPLATE_PATH = "./test_template.txt"
 const SOLUTION_DIR = "solutions"
 
+func printUsefullCommands(question Question) {
+  fmt.Printf("Commands:\n\tRun test:\t%v\n", question.TestCmd())
+}
+
 func generateTestTemplate(problem Question) error {
 	meta, _ := problem.ParseMetaData()
 	cmd := exec.Command("gotests", "-w", "-only", fmt.Sprintf("^%s$", meta.Name), problem.SolutionFileName())
