@@ -8,6 +8,14 @@ type MaxHeap[T cmp.Ordered] struct {
 	capacity int
 }
 
+func NewMaxHeap[T cmp.Ordered](cap int) MaxHeap[T] {
+	return MaxHeap[T]{
+		arr:      make([]T, 0, cap),
+		size:     0,
+		capacity: cap,
+	}
+}
+
 func New[T cmp.Ordered](arr []T) MaxHeap[T] {
 	heap := MaxHeap[T]{
 		arr:      arr,
@@ -38,10 +46,11 @@ func (h *MaxHeap[T]) Insert(item T) {
 		return
 	}
 	h.size += 1
-	h.arr[h.size] = item
-	i := h.size
-	for i < 0 || h.arr[i] > h.arr[h.parent(i)] {
+	i := h.size - 1
+	h.arr[i] = item
+	for i != 0 && h.arr[i] > h.arr[h.parent(i)] {
 		h.swap(i, h.parent(i))
+		i = h.parent(i)
 	}
 }
 
