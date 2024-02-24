@@ -1,4 +1,4 @@
-package maxheap
+package heap
 
 import "cmp"
 
