@@ -19,11 +19,16 @@ func NewStack[T cmp.Ordered](cap int) Stack[T] {
 	}
 }
 
+func (s Stack[T]) Size() int {
+  return s.size
+}
+
 func (s *Stack[T]) Push(item T) error {
 	if s.size >= s.cap {
 		return fmt.Errorf("Stack is full")
 	}
 	s.size++
+  s.arr = s.arr[:s.size]
 	s.arr[s.size-1] = item
 	return nil
 }
@@ -33,6 +38,7 @@ func (s *Stack[T]) Pop() {
     return
 	}
 	s.size--
+  s.arr = s.arr[:s.size]
 }
 
 func (s Stack[T]) Top() (T, error) {
