@@ -52,3 +52,7 @@ func (s Stack[T]) Top() (T, error) {
 func (s Stack[T]) IsEmpty() bool {
 	return s.size == 0
 }
+
+func (s Stack[T]) Data() []T {
+  return s.arr
+}
