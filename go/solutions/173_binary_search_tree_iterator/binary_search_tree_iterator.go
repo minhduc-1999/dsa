@@ -1,7 +1,5 @@
 package binarysearchtreeiterator
 
-import "dsa/utils/stack"
-
 // Title: Binary Search Tree Iterator
 
 // Problem link: https://leetcode.com/problems/binary-search-tree-iterator
@@ -29,14 +27,14 @@ type BSTIterator struct {
 
 func Constructor(root *TreeNode) BSTIterator {
 	stack := []*TreeNode{}
-  iter := BSTIterator{
+	iter := BSTIterator{
 		stack: stack,
 	}
 	if root == nil {
-    return iter
+		return iter
 	}
-  iter.moveLeft(root)
-  return iter
+	iter.moveLeft(root)
+	return iter
 }
 
 func (this *BSTIterator) moveLeft(root *TreeNode) {
@@ -51,7 +49,7 @@ func (this *BSTIterator) Next() int {
 	top := this.stack[lenS-1]
 	this.stack = this.stack[:lenS-1]
 	if top.Right != nil {
-    this.moveLeft(top.Right)
+		this.moveLeft(top.Right)
 	}
 	return top.Val
 }
