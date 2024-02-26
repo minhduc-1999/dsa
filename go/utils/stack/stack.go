@@ -1,17 +1,16 @@
 package stack
 
 import (
-	"cmp"
 	"fmt"
 )
 
-type Stack[T cmp.Ordered] struct {
+type Stack[T any] struct {
 	arr  []T
 	size int
 	cap  int
 }
 
-func NewStack[T cmp.Ordered](cap int) Stack[T] {
+func NewStack[T any](cap int) Stack[T] {
 	return Stack[T]{
 		arr:  make([]T, 0, cap),
 		size: 0,

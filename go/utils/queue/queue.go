@@ -1,18 +1,17 @@
 package queue
 
 import (
-	"cmp"
 	"fmt"
 )
 
-type Queue[T cmp.Ordered] struct {
+type Queue[T any] struct {
 	arr        []T
 	frontIndex int
 	backIndex  int
 	cap        int
 }
 
-func NewQueue[T cmp.Ordered](cap int) Queue[T] {
+func NewQueue[T any](cap int) Queue[T] {
 	return Queue[T]{
 		arr:        make([]T, 0, cap),
 		frontIndex: 0,
