@@ -4,12 +4,6 @@ import (
   . "dsa/utils/queue"
 )
 
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
-
 func buildTree(n int) *TreeNode {
 	root := TreeNode{
 		Val: 1,
