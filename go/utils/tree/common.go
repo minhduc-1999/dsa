@@ -1,11 +1,39 @@
 package tree
 
-import "dsa/utils/queue"
+import (
+	"dsa/utils/queue"
+	"fmt"
+)
 
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
 	Right *TreeNode
+}
+
+func PrintTreeBFS(root *TreeNode) string {
+	s := ""
+	if root == nil {
+		return s
+	}
+	q := queue.NewQueue[*TreeNode](100)
+	q.Enqueue(root)
+	for !q.IsEmpty() {
+		top, _ := q.Front()
+		q.Dequeue()
+		if top.Left != nil {
+			q.Enqueue(top.Left)
+		}
+		if top.Right != nil {
+			q.Enqueue(top.Right)
+		}
+		if top.Val == -9999 {
+			s += "null\t"
+		} else {
+			s += fmt.Sprintf("%d\t", top.Val)
+		}
+	}
+	return s
 }
 
 func NewFromArray(arr []int) *TreeNode {
@@ -29,14 +57,18 @@ func NewFromArray(arr []int) *TreeNode {
 			top.Left = left
 			q.Enqueue(left)
 		}
-		if arr[cur+1] != -9999 {
+		cur += 1
+		if cur >= n {
+			break
+		}
+		if arr[cur] != -9999 {
 			right := &TreeNode{
-				Val: arr[cur+1],
+				Val: arr[cur],
 			}
 			top.Right = right
 			q.Enqueue(right)
 		}
-		cur += 2
+		cur += 1
 	}
 	return root
 }
