@@ -1,9 +1,10 @@
-package main
+package fetcher
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
-	"path"
+	"io"
+	"net/http"
 	"strings"
 )
 
@@ -106,34 +107,67 @@ func (q Question) TransformTitleSlug() string {
 	return strings.ReplaceAll(q.TitleSlug, "-", "_")
 }
 
-func (q Question) ProblemLink() string {
-	return fmt.Sprintf("%s/problems/%s", LEETCODE_URL, q.TitleSlug)
-}
-
-func (q Question) SolutionFileName() string {
-	return path.Join(q.Dirname(), fmt.Sprintf("%s.go", q.TransformTitleSlug()))
-}
-
-func (q Question) TestFileName() string {
-	return fmt.Sprintf("%s_test.go", q.TransformTitleSlug())
-}
-
-func (q Question) Dirname() string {
-	return path.Join(SOLUTION_DIR, fmt.Sprintf("%s_%s", q.FrontendId, q.TransformTitleSlug()))
-}
-
-func (q Question) TestCmd() string {
-	return fmt.Sprintf("go test %v", path.Join(DSA_MODULE, q.Dirname()))
-}
-
-func (q Question) PackageName() string {
-	return strings.ReplaceAll(strings.ToLower(q.TitleSlug), "-", "")
-}
-
 func (q Question) Testcases() []string {
 	var result []string
 	for _, testcase := range q.ExampleTestcaseList {
 		result = append(result, strings.ReplaceAll(testcase, "\n", "\t"))
 	}
 	return result
+}
+
+func FetchProblem(slug string) (Question, error) {
+	const PROBLEM_URL = "https://leetcode.com/graphql/"
+	const QUERY = `
+  query questionData($titleSlug: String!) {
+    question(titleSlug: $titleSlug) {
+        questionFrontendId
+        questionTitle
+        questionTitleSlug
+        metaData
+        canSeeQuestion
+        isPaidOnly
+        exampleTestcaseList
+        codeSnippets {
+          lang
+          langSlug
+          code
+        }
+    }
+  }
+  `
+	query_param := Query{
+		Query: QUERY,
+		Variables: map[string]interface{}{
+			"titleSlug": slug,
+		},
+	}
+	request_buf, err := json.Marshal(query_param)
+	if err != nil {
+		return Question{}, err
+	}
+	buf_reader := bytes.NewReader(request_buf)
+	client := http.Client{}
+	request, err := http.NewRequest(http.MethodPost, PROBLEM_URL, buf_reader)
+	if err != nil {
+		return Question{}, err
+	}
+	request.Header.Add("content-type", "application/json")
+	request.Header.Add("referer", "https://leetcode.com")
+	request.Header.Add("cookie", "csrftoken=Q70rHaUJFYC92Ey0ty3NuIRIkZCz15MCnMXUUsLj1FZwTnUVcC2GLOQ6bO2q37OT;")
+	request.Header.Add("X-Csrftoken", "Q70rHaUJFYC92Ey0ty3NuIRIkZCz15MCnMXUUsLj1FZwTnUVcC2GLOQ6bO2q37OT")
+	resp, err := client.Do(request)
+	if err != nil {
+		return Question{}, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return Question{}, err
+	}
+	var rawProblem RawProblem
+	err = json.Unmarshal(body, &rawProblem)
+	if err != nil {
+		return Question{}, err
+	}
+	return rawProblem.Data.Question, nil
 }

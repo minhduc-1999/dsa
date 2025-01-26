@@ -9,4 +9,4 @@ package {{.PackageName}}
 // case {{$index}}: {{$elem}} 
 {{- end}}
 
-{{.CodeSnippet "Go"}}
+{{.CodeSnippet}} 
