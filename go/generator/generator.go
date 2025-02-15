@@ -101,8 +101,5 @@ func (g generator) TestCmd() string {
 }
 
 func (g generator) PackageName() string {
-	if len(g.packageName) > 0 {
-		return g.packageName
-	}
-	return strings.ReplaceAll(strings.ToLower(g.question.TitleSlug), "-", "")
+	return strings.ReplaceAll(strings.ToLower(g.packageName), "-", "")
 }
