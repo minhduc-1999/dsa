@@ -8,32 +8,41 @@ import (
 
 func TestQueue(t *testing.T) {
 	queue := NewQueue[int](10)
-	want := Queue[int]{
-		arr:        make([]int, 0, 10),
-		frontIndex: 0,
-		backIndex:  0,
-		cap:        10,
-	}
-	assert.Equal(t, want, queue)
 
+	assert.True(t, queue.IsEmpty())
+	assert.Equal(t, 0, queue.Size())
+	_, ok := queue.Dequeue()
+	assert.False(t, ok)
+	_, ok = queue.Front()
+
+	assert.False(t, ok)
 	queue.Enqueue(1)
-  queue.Enqueue(2)
-  queue.Enqueue(3)
+	queue.Enqueue(2)
+	queue.Enqueue(3)
 
 	assert.Equal(t, false, queue.IsEmpty())
-  assert.Equal(t, 3, queue.Size())
+	assert.Equal(t, 3, queue.Size())
 
-  frontValue, _ := queue.Front()
+	frontValue, ok := queue.Front()
+	assert.True(t, ok)
+	assert.Equal(t, 1, frontValue)
+	frontValue, ok = queue.Dequeue()
+	assert.True(t, ok)
 	assert.Equal(t, 1, frontValue)
 
-  queue.Dequeue()
-  frontValue, _ = queue.Front()
-  assert.Equal(t, 2, frontValue)
+	frontValue, ok = queue.Front()
+	assert.True(t, ok)
+	assert.Equal(t, 2, frontValue)
+	frontValue, ok = queue.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, 2, frontValue)
 
-  queue.Dequeue()
-  frontValue, _ = queue.Front()
-  assert.Equal(t, 3, frontValue)
+	frontValue, ok = queue.Front()
+	assert.True(t, ok)
+	assert.Equal(t, 3, frontValue)
+	frontValue, ok = queue.Dequeue()
+	assert.True(t, ok)
+	assert.Equal(t, 3, frontValue)
 
-  queue.Dequeue()
 	assert.Equal(t, true, queue.IsEmpty())
 }

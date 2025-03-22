@@ -1,54 +1,57 @@
 package queue
 
-import (
-	"fmt"
-)
-
 type Queue[T any] struct {
 	arr        []T
 	frontIndex int
-	backIndex  int
 	cap        int
+	len        int
 }
 
 func NewQueue[T any](cap int) Queue[T] {
 	return Queue[T]{
-		arr:        make([]T, 0, cap),
+		arr:        make([]T, cap),
 		frontIndex: 0,
-		backIndex:  0,
+		len:        0,
 		cap:        cap,
 	}
 }
 
 func (q Queue[T]) IsEmpty() bool {
-	return q.Size() == 0
+	return q.len == 0
 }
 
 func (q Queue[T]) Size() int {
-	return q.backIndex - q.frontIndex
+	return q.len
 }
 
-func (q Queue[T]) Front() (T, error) {
+func (q Queue[T]) Front() (T, bool) {
 	if q.Size() == 0 {
 		var result T
-		return result, fmt.Errorf("Queue is empty")
+		return result, false
 	}
-	return q.arr[q.frontIndex], nil
+	return q.arr[q.frontIndex], true
 }
 
-func (q *Queue[T]) Enqueue(item T) {
-	if q.Size() >= q.cap {
-		return
+func (q *Queue[T]) Enqueue(item T) bool {
+	if q.len >= q.cap {
+		return false
 	}
-  q.arr = append(q.arr, item)
-	q.backIndex++
+	q.arr[q.len] = item
+	q.len++
+	return true
 }
 
-func (q *Queue[T]) Dequeue() {
-	if q.Size() == 0 {
-		return
+func (q *Queue[T]) Dequeue() (T, bool) {
+	var v T
+	if q.len == 0 {
+		return v, false
 	}
-  copy(q.arr, q.arr[q.frontIndex+1:q.backIndex])
-  q.backIndex--
-  q.arr = q.arr[:q.backIndex]
+	v = q.arr[q.frontIndex]
+	if q.frontIndex++; q.frontIndex == q.cap {
+		q.frontIndex = 0
+	}
+	if q.len--; q.len < 0 {
+		q.len = 0
+	}
+	return v, true
 }
